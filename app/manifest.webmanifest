@@ -1,0 +1,15 @@
+{
+  "name": "KIRATVA",
+  "short_name": "KIRATVA",
+  "description": "Pure Himalayan products, ₹0 delivery across India.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F8F4E8",
+  "theme_color": "#15382B",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}

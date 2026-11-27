@@ -1,0 +1,661 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>KIRATVA</title>
+<meta name="description" content="KIRATVA demo app: pure Himalayan products, ₹0 delivery across India.">
+<meta name="theme-color" content="#15382B">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="KIRATVA">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<style>
+:root {
+  --forest: #15382B; --moss: #2F6247; --leaf: #86AD54; --mist: #DFE9D6; --cream: #F8F4E8; --sand: #EFE7D3;
+  --card: #FFFDF6; --ink: #17261E; --muted: #5B6A60; --rule: #E0D8C2; --amber: #E2A22B; --amber-soft: #FBE9BF;
+  --amber-deep: #8A5B08; --wa: #128C4A; --red: #C0392B;
+  --serif: ui-serif, "New York", "Iowan Old Style", Georgia, "Kohinoor Devanagari", "Noto Serif Devanagari", serif;
+  --sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", Roboto, "Kohinoor Devanagari", "Noto Sans Devanagari", sans-serif;
+  --top: env(safe-area-inset-top, 0px); --bottom: env(safe-area-inset-bottom, 0px);
+}
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+html, body { height: 100%; margin: 0; }
+body {
+  position: fixed; inset: 0; overflow: hidden; background: var(--forest); color: var(--ink);
+  font: 16px/1.45 var(--sans); -webkit-text-size-adjust: 100%; overscroll-behavior: none;
+  -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+}
+input { -webkit-user-select: text; user-select: text; }
+button { font: inherit; color: inherit; border: 0; background: none; padding: 0; margin: 0; cursor: pointer; text-align: inherit; }
+svg { display: block; flex: none; }
+[hidden] { display: none !important; }
+
+#app { position: absolute; inset: 0; display: flex; flex-direction: column; max-width: 520px; margin: 0 auto; background: var(--cream); }
+#top {
+  flex: none; display: flex; align-items: center; gap: 4px; background: var(--forest); color: #fff;
+  padding: var(--top) 12px 0 8px; height: calc(56px + var(--top));
+}
+#back { width: 40px; height: 40px; display: grid; place-items: center; border-radius: 20px; }
+#back:active { background: rgba(255,255,255,.2); }
+#title { flex: 1; min-width: 0; padding-left: 8px; font: 600 20px/1.2 var(--serif); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#lang { height: 32px; padding: 0 14px; border-radius: 16px; background: var(--amber); color: var(--ink); font-weight: 700; font-size: 13px; }
+#content { flex: 1; min-height: 0; overflow-y: auto; -webkit-overflow-scrolling: touch; overscroll-behavior: contain; }
+#content.enter > * { animation: enter .22s ease-out both; }
+@keyframes enter { from { opacity: 0; transform: translateY(10px); } }
+#nav {
+  flex: none; display: flex; background: var(--card); border-top: 1px solid var(--rule);
+  padding-bottom: var(--bottom); height: calc(62px + var(--bottom));
+}
+#nav button { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 3px; color: var(--muted); font-size: 11px; }
+#nav button.on { color: var(--forest); font-weight: 700; }
+#nav .ic { position: relative; width: 56px; height: 30px; display: grid; place-items: center; border-radius: 14px; transition: background .2s; }
+#nav .on .ic { background: var(--mist); }
+#nav .badge { position: absolute; top: -2px; right: 4px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--amber); color: var(--ink); font-size: 10px; font-weight: 700; display: grid; place-items: center; }
+
+.pad { padding: 6px 16px 28px; }
+.section { font: 600 20px/1.25 var(--serif); color: var(--forest); margin: 22px 0 10px; }
+.card { background: var(--card); border-radius: 20px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(21,56,43,.12); }
+.card.flush { padding: 4px 0; }
+.card + .card { margin-top: 12px; }
+.muted { color: var(--muted); }
+.btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; height: 50px; padding: 0 20px; border-radius: 25px; background: var(--forest); color: #fff; font-weight: 700; font-size: 15px; transition: transform .1s, opacity .1s; }
+.btn:active { transform: scale(.98); opacity: .9; }
+.btn.wa { background: var(--wa); }
+.btn.line { background: transparent; color: var(--forest); box-shadow: inset 0 0 0 1.5px var(--forest); }
+.btn.small { width: auto; height: 44px; }
+.chip { display: inline-block; padding: 4px 10px; border-radius: 12px; background: var(--mist); color: var(--moss); font-size: 12px; font-weight: 700; }
+.chip.cream { background: var(--cream); color: var(--forest); }
+.chip.amber { background: var(--amber-soft); color: var(--amber-deep); }
+
+.hero { position: relative; height: 330px; background: var(--forest) center/cover no-repeat; }
+.hero::before { content: ""; position: absolute; inset: 0; background: linear-gradient(rgba(21,56,43,0), rgba(21,56,43,.4) 50%, rgba(21,56,43,.96)); }
+.hero .words { position: absolute; left: 0; right: 0; bottom: 0; padding: 0 20px 22px; color: #fff; }
+.hero .pill { display: inline-block; padding: 5px 12px; border-radius: 14px; background: rgba(0,0,0,.2); border: 1px solid rgba(223,233,214,.4); color: var(--mist); font-size: 12px; font-weight: 700; }
+.hero h1 { font: 600 33px/1.22 var(--serif); margin: 10px 0 0; }
+.hero p { font: italic 15px var(--serif); color: var(--mist); margin: 6px 0 0; }
+.strip { display: flex; align-items: center; justify-content: center; gap: 8px; background: var(--amber); color: var(--ink); font-weight: 700; font-size: 14px; padding: 10px 16px; }
+
+.shelf { display: flex; gap: 12px; overflow-x: auto; margin: 0 -16px; padding: 2px 16px 8px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+.shelf::-webkit-scrollbar { display: none; }
+.shelf button { flex: none; width: 210px; background: var(--card); border-radius: 20px; overflow: hidden; box-shadow: 0 1px 4px rgba(21,56,43,.16); }
+.shelf img { width: 100%; height: 150px; object-fit: cover; display: block; }
+.shelf .in { padding: 10px 14px 14px; }
+.pname { font: 600 18px/1.25 var(--serif); color: var(--forest); }
+.price { font-weight: 700; }
+
+.feature { display: flex; gap: 12px; align-items: flex-start; padding: 8px 0; }
+.feature .dot { flex: none; width: 38px; height: 38px; border-radius: 19px; background: var(--mist); color: var(--moss); display: grid; place-items: center; }
+.feature .num { font: 700 16px var(--serif); }
+.feature b { display: block; font-size: 15px; }
+.feature span { display: block; font-size: 13px; color: var(--muted); white-space: pre-line; }
+.divider { height: 1px; background: var(--rule); margin: 6px 0; }
+
+.pcard { display: block; width: 100%; background: var(--card); border-radius: 22px; overflow: hidden; box-shadow: 0 1px 4px rgba(21,56,43,.16); margin-bottom: 16px; }
+.pcard .ph { position: relative; }
+.pcard img { width: 100%; height: 200px; object-fit: cover; display: block; }
+.pcard .chip { position: absolute; top: 12px; left: 12px; }
+.pcard .in { padding: 12px 16px 16px; }
+.pcard .foot { display: flex; align-items: center; justify-content: space-between; margin-top: 12px; }
+.soon { background: var(--mist); box-shadow: none; border-radius: 22px; }
+
+.photo { width: 100%; height: 300px; object-fit: cover; display: block; }
+.sizes { display: flex; gap: 8px; flex-wrap: wrap; }
+.sizes button { height: 44px; padding: 0 18px; border-radius: 22px; background: #fff; box-shadow: inset 0 0 0 1px var(--rule); font-weight: 700; font-size: 15px; }
+.sizes button.on { background: var(--forest); color: #fff; box-shadow: none; }
+.label { font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.stepper { display: inline-flex; align-items: center; height: 50px; border-radius: 25px; background: #fff; box-shadow: inset 0 0 0 1px var(--rule); }
+.stepper.sm { height: 38px; }
+.stepper button { width: 44px; height: 100%; font-size: 20px; font-weight: 700; color: var(--forest); text-align: center; }
+.stepper.sm button { width: 38px; }
+.stepper b { min-width: 22px; text-align: center; }
+
+.line { display: flex; align-items: center; gap: 12px; background: var(--card); border-radius: 20px; padding: 10px 12px 10px 10px; box-shadow: 0 1px 3px rgba(21,56,43,.12); margin-bottom: 10px; }
+.line img { width: 72px; height: 72px; border-radius: 14px; object-fit: cover; flex: none; }
+.line .mid { flex: 1; min-width: 0; }
+.pair { display: flex; justify-content: space-between; gap: 12px; font-size: 14px; color: var(--muted); padding: 3px 0; }
+.pair.strong { font-size: 18px; font-weight: 700; color: var(--ink); }
+.pair span:last-child { flex: none; color: var(--ink); font-weight: 700; }
+
+.field { display: block; margin-bottom: 10px; }
+.field span { display: block; font-size: 13px; font-weight: 700; color: var(--muted); margin-bottom: 4px; }
+.field input { width: 100%; height: 48px; padding: 0 14px; border: 1px solid var(--rule); border-radius: 14px; background: #fff; color: var(--ink); font: 16px var(--sans); outline: none; -webkit-appearance: none; appearance: none; }
+.field input:focus { border-color: var(--forest); box-shadow: 0 0 0 3px rgba(47,98,71,.18); }
+.field input.bad { border-color: var(--red); box-shadow: 0 0 0 3px rgba(192,57,43,.16); }
+.two { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px; }
+.note { display: flex; gap: 10px; align-items: flex-start; background: var(--amber-soft); color: var(--amber-deep); border-radius: 16px; padding: 12px 14px; font-size: 13px; font-weight: 600; }
+
+.pay { display: block; width: 100%; background: var(--card); border-radius: 18px; padding: 12px 14px; box-shadow: inset 0 0 0 1px var(--rule); margin-bottom: 8px; }
+.pay.on { background: #fff; box-shadow: inset 0 0 0 2px var(--forest); }
+.pay .head { display: flex; align-items: center; gap: 12px; }
+.pay .ring { flex: none; width: 18px; height: 18px; border-radius: 9px; background: #fff; box-shadow: inset 0 0 0 2px var(--muted); }
+.pay.on .ring { background: var(--forest); box-shadow: inset 0 0 0 2px var(--forest), inset 0 0 0 5px #fff; }
+.pay b { display: block; }
+.pay small { display: block; font-size: 13px; color: var(--muted); }
+.pay .more { margin: 8px 0 0 30px; font-size: 14px; }
+.pay canvas { display: block; width: 150px; height: 150px; margin: 10px 0 0 30px; border-radius: 10px; }
+
+.order { display: block; width: 100%; background: var(--card); border-radius: 20px; padding: 14px 16px; box-shadow: 0 1px 3px rgba(21,56,43,.12); margin-bottom: 10px; }
+.order .head { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.done { text-align: center; padding: 6px 0 14px; }
+.done .ok { width: 76px; height: 76px; border-radius: 38px; background: var(--moss); color: #fff; display: grid; place-items: center; margin: 0 auto; animation: pop .35s .15s cubic-bezier(.2,1.4,.5,1) both; }
+@keyframes pop { from { transform: scale(0); } }
+.done h2 { font: 600 26px var(--serif); color: var(--forest); margin: 12px 0 4px; }
+
+.choice { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.choice button { height: 46px; border-radius: 23px; background: #fff; box-shadow: inset 0 0 0 1px var(--rule); font-weight: 700; text-align: center; }
+.choice button.on { background: var(--forest); color: #fff; box-shadow: none; }
+.link { display: flex; align-items: center; gap: 14px; width: 100%; padding: 12px 16px; }
+.link:active { background: rgba(21,56,43,.06); }
+.link .ic { color: var(--moss); }
+.link .txt { flex: 1; min-width: 0; }
+.link b { display: block; font-size: 15px; }
+.link small { display: block; font-size: 13px; color: var(--muted); }
+.link .go { color: var(--muted); transform: rotate(180deg); }
+.about { text-align: center; font-size: 12px; color: var(--muted); margin-top: 22px; white-space: pre-line; }
+
+.empty { height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 24px 32px; }
+.empty .big { width: 84px; height: 84px; border-radius: 42px; background: var(--mist); color: var(--moss); display: grid; place-items: center; }
+.empty h2 { font: 600 22px var(--serif); color: var(--forest); margin: 16px 0 4px; }
+.empty p { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+.empty .btn { width: auto; }
+
+#toast { position: absolute; left: 50%; bottom: calc(84px + var(--bottom)); transform: translate(-50%, 12px); max-width: 86%; background: var(--ink); color: #fff; padding: 10px 18px; border-radius: 22px; font-size: 14px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s; z-index: 5; text-align: center; }
+#toast.show { opacity: 1; transform: translate(-50%, 0); }
+#install { position: absolute; left: 10px; right: 10px; bottom: calc(72px + var(--bottom)); z-index: 4; display: flex; gap: 12px; align-items: center; background: var(--forest); color: #fff; border-radius: 18px; padding: 12px 8px 12px 14px; box-shadow: 0 8px 24px rgba(0,0,0,.28); animation: enter .3s .6s ease-out both; }
+#install img { width: 44px; height: 44px; border-radius: 10px; flex: none; }
+#install p { flex: 1; margin: 0; font-size: 13px; line-height: 1.4; color: var(--mist); }
+#install p b { display: block; color: #fff; font-size: 15px; }
+#install p svg { display: inline-block; vertical-align: -4px; margin: 0 1px; }
+#install button { width: 36px; height: 36px; display: grid; place-items: center; font-size: 22px; color: var(--mist); }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+</head>
+<body>
+<div id="app">
+  <header id="top">
+    <button id="back" data-act="back" aria-label="Back" hidden></button>
+    <div id="title"></div>
+    <button id="lang" data-act="lang"></button>
+  </header>
+  <main id="content"></main>
+  <nav id="nav"></nav>
+  <div id="install" hidden></div>
+  <div id="toast" role="status"></div>
+</div>
+<script>
+(function () {
+  "use strict";
+  var VERSION = "2.1";
+  var WA_NUMBER = "917017802089", PHONE = "+917017802089", EMAIL = "info@kiratva.com";
+
+  var ICONS = {
+    back: "M15,5 L8,12 L15,19",
+    home: "M3,11 L12,3 L21,11 M5,10 V20 H19 V10 M10,20 V14 H14 V20",
+    leaf: "M4,20 C4,10 10,4 20,4 C20,14 14,20 4,20 Z M4,20 L14,10",
+    cart: "M3,4 H6 L8,16 H19 L21,7 H7 M9,20 m-1,0 a1,1 0 1,0 2,0 a1,1 0 1,0 -2,0 M18,20 m-1,0 a1,1 0 1,0 2,0 a1,1 0 1,0 -2,0",
+    orders: "M6,3 H18 V21 L15,19 L12,21 L9,19 L6,21 Z M9,8 H15 M9,12 H15",
+    user: "M12,8 m-4,0 a4,4 0 1,0 8,0 a4,4 0 1,0 -8,0 M4,21 C4,16 8,14 12,14 C16,14 20,16 20,21",
+    chat: "M3.5,20.5 L4.8,16.1 A8.5,8.5 0 1,1 8,19.3 Z",
+    check: "M5,12.5 L9.5,17 L19,7.5",
+    doc: "M6,3 H14 L18,7 V21 H6 Z M14,3 V7 H18 M9,12 H15 M9,16 H15",
+    drop: "M12,3 C16,8 18,11 18,14 A6,6 0 0,1 6,14 C6,11 8,8 12,3 Z",
+    jar: "M7,3 H17 V6 H7 Z M6.5,9 C6.5,7.5 7,6.5 8,6 H16 C17,6.5 17.5,7.5 17.5,9 V18 C17.5,19.7 16.2,21 14.5,21 H9.5 C7.8,21 6.5,19.7 6.5,18 Z M6.5,12 H17.5",
+    mail: "M3,6 H21 V18 H3 Z M3,7 L12,13 L21,7",
+    peak: "M2,20 L9,8 L13,14 L16,10 L22,20 Z",
+    phone: "M5,4 H9 L11,9 L8.5,10.5 C9.5,13 11,14.5 13.5,15.5 L15,13 L20,15 V19 C20,20 19,21 18,21 C10,20.5 3.5,14 3,6 C3,5 4,4 5,4 Z",
+    truck: "M2,6 H14 V16 H2 Z M14,9 H18 L21,12 V16 H14 M6,18.5 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0 M17,18.5 m-1.5,0 a1.5,1.5 0 1,0 3,0 a1.5,1.5 0 1,0 -3,0",
+    share: "M12,3 V15 M8,7 L12,3 L16,7 M8,11 H5 V21 H19 V11 H16",
+    refresh: "M20,12 A8,8 0 1,1 17.6,6.3 M20,4 V8 H16"
+  };
+  function icon(name, size) {
+    size = size || 24;
+    return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + ICONS[name] + '"/></svg>';
+  }
+
+  var P = [
+    { en: "Shilajit Resin", hi: "शिलाजीत रेज़िन", unit: "g", img: "../img/shilajit-card.webp",
+      tagEn: "Pure Uttarakhand shilajit, in a glass jar", tagHi: "शुद्ध उत्तराखंड शिलाजीत, काँच के जार में",
+      descEn: "Shilajit comes from high Himalayan rock. Every jar holds the same single resin; the only thing that changes between sizes is how much you get.",
+      descHi: "शिलाजीत ऊँचे हिमालय की चट्टानों से आता है। हर जार में एक ही शिलाजीत है; साइज़ के साथ सिर्फ़ मात्रा बदलती है।",
+      sizes: [10, 20, 30], prices: [1199, 2199, 2699], pick: 2 },
+    { en: "Sea Buckthorn Pulp", hi: "सी बकथॉर्न पल्प", unit: "ml", img: "../img/sea-buckthorn.webp",
+      tagEn: "Bright orange Himalayan berries, bottled", tagHi: "हिमालय की नारंगी बेरी का पल्प, बोतल में",
+      descEn: "Sea buckthorn is a bright orange mountain berry, long eaten in the Himalaya. This is its pulp, bottled in Almora.",
+      descHi: "सी बकथॉर्न पहाड़ों की नारंगी बेरी है, जो हिमालय में लंबे समय से खाई जाती रही है। यह उसका पल्प है, अल्मोड़ा में बोतलबंद।",
+      sizes: [300], prices: [1199], pick: 0 }
+  ];
+
+  var PAY = [
+    ["upi", "UPI", "UPI", "Google Pay, PhonePe, Paytm, BHIM or any UPI app", "Google Pay, PhonePe, Paytm, BHIM या कोई भी UPI ऐप",
+      "In the live app this opens your UPI app with the amount already filled in.", "असली ऐप में यह आपका UPI ऐप खोलेगा, रक़म पहले से भरी होगी।"],
+    ["qr", "Scan a QR code", "QR कोड स्कैन करें", "Scan with any UPI app", "किसी भी UPI ऐप से स्कैन करें",
+      "Sample code for this demo. The live app shows KIRATVA's own UPI QR.", "यह डेमो का नमूना कोड है। असली ऐप में KIRATVA का UPI QR दिखेगा।"],
+    ["razorpay", "Razorpay", "Razorpay", "Cards, net banking and wallets", "कार्ड, नेट बैंकिंग और वॉलेट",
+      "In the live app you continue on Razorpay's secure page.", "असली ऐप में आप Razorpay के सुरक्षित पेज पर जाएंगे।"],
+    ["paytm", "Paytm", "Paytm", "Paytm wallet or Paytm UPI", "Paytm वॉलेट या Paytm UPI",
+      "In the live app you continue in Paytm.", "असली ऐप में आप Paytm में आगे बढ़ेंगे।"],
+    ["bank", "Bank transfer", "बैंक ट्रांसफ़र", "NEFT or IMPS from your bank", "अपने बैंक से NEFT या IMPS",
+      "Account details will be shown here at launch. After paying, send us the reference on WhatsApp.", "खाते का विवरण लॉन्च पर यहाँ दिखेगा। भुगतान के बाद रेफ़रेंस नंबर WhatsApp पर भेजें।"]
+  ];
+  var FIELDS = ["name", "phone", "addr", "pin", "city"];
+
+  // ---------------------------------------------------------------- storage
+  var mem = {};
+  function load(key, fallback) {
+    try { var v = localStorage.getItem("kiratva-app-" + key); return v === null ? fallback : JSON.parse(v); }
+    catch (e) { return key in mem ? mem[key] : fallback; }
+  }
+  function save(key, value) {
+    mem[key] = value;
+    try { localStorage.setItem("kiratva-app-" + key, JSON.stringify(value)); } catch (e) { /* private mode: keep in memory */ }
+  }
+
+  var hindi = load("hindi", /^hi/i.test(navigator.language || ""));
+  var tab = 0, stack = [], payMethod = "upi", skipPop = false;
+  var profile = load("profile", {}) || {};
+  var draft = {};
+  FIELDS.forEach(function (f) { draft[f] = profile[f] || ""; });
+  var orders = load("orders", []);
+  if (!Array.isArray(orders)) orders = [];
+  var cart = (load("cart", []) || []).filter(function (l) {
+    return l && P[l.p] && l.s >= 0 && l.s < P[l.p].sizes.length && l.q > 0;
+  });
+
+  var $content = document.getElementById("content"), $nav = document.getElementById("nav"),
+      $title = document.getElementById("title"), $back = document.getElementById("back"),
+      $lang = document.getElementById("lang"), $toast = document.getElementById("toast"),
+      $install = document.getElementById("install");
+  $back.innerHTML = icon("back");
+
+  // ---------------------------------------------------------------- helpers
+  function t(en, hi) { return hindi ? hi : en; }
+  function esc(s) { return String(s == null ? "" : s).replace(/[&<>"']/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]; }); }
+  function rupee(n) { return "₹" + Number(n).toLocaleString("en-IN"); }
+  function unit(u) { return u === "g" ? t("g", "ग्राम") : t("ml", "मि.ली."); }
+  function pname(p) { return t(p.en, p.hi); }
+  function from(p) { return (p.sizes.length > 1 ? t("from ", "शुरुआत ") : "") + rupee(p.prices[0]); }
+  function when(ms) {
+    try { return new Date(ms).toLocaleString(hindi ? "hi-IN" : "en-IN", { day: "numeric", month: "short", year: "numeric", hour: "numeric", minute: "2-digit" }); }
+    catch (e) { return new Date(ms).toDateString(); }
+  }
+  function cartCount() { return cart.reduce(function (n, l) { return n + l.q; }, 0); }
+  function cartTotal() { return cart.reduce(function (n, l) { return n + P[l.p].prices[l.s] * l.q; }, 0); }
+  function addToCart(p, s, q) {
+    var line = cart.filter(function (l) { return l.p === p && l.s === s; })[0];
+    if (line) line.q = Math.min(10, line.q + q); else cart.push({ p: p, s: s, q: Math.min(10, q) });
+    save("cart", cart);
+  }
+  function payName(id) { var m = PAY.filter(function (x) { return x[0] === id; })[0]; return m ? t(m[1], m[2]) : id; }
+  var toastTimer;
+  function toast(msg) {
+    $toast.textContent = msg; $toast.classList.add("show");
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { $toast.classList.remove("show"); }, 2200);
+  }
+  function whatsapp(text) {
+    var url = "https://wa.me/" + WA_NUMBER + "?text=" + encodeURIComponent(text);
+    var w = window.open(url, "_blank");
+    if (!w) location.href = url;
+  }
+  function web(url) { var w = window.open(url, "_blank"); if (!w) location.href = url; }
+
+  // ---------------------------------------------------------------- pieces
+  function section(s) { return '<h2 class="section">' + esc(s) + "</h2>"; }
+  function feature(ic, title, sub) {
+    return '<div class="feature"><div class="dot">' + icon(ic, 20) + "</div><div><b>" + esc(title) + "</b><span>" + esc(sub) + "</span></div></div>";
+  }
+  function step(n, title, sub) {
+    return '<div class="feature"><div class="dot num">' + n + "</div><div><b>" + esc(title) + "</b><span>" + esc(sub) + "</span></div></div>";
+  }
+  var divider = '<div class="divider"></div>';
+  function btn(label, act, cls, ic, arg) {
+    return '<button class="btn ' + (cls || "") + '" data-act="' + act + '"' + (arg == null ? "" : ' data-arg="' + esc(arg) + '"') + ">" + (ic ? icon(ic, 20) : "") + esc(label) + "</button>";
+  }
+  function pair(l, r, strong) { return '<div class="pair' + (strong ? " strong" : "") + '"><span>' + esc(l) + "</span><span>" + esc(r) + "</span></div>"; }
+  function stepper(value, act, arg, small) {
+    var a = arg == null ? "" : ' data-arg="' + arg + '"';
+    return '<div class="stepper' + (small ? " sm" : "") + '"><button data-act="' + act + '" data-d="-1"' + a + ' aria-label="Less">−</button><b>' + value +
+      '</b><button data-act="' + act + '" data-d="1"' + a + ' aria-label="More">+</button></div>';
+  }
+  function field(label, key, attrs) {
+    return '<label class="field"><span>' + esc(label) + '</span><input data-f="' + key + '" value="' + esc(draft[key]) + '" ' + attrs + "></label>";
+  }
+  var ATTR = {
+    name: 'type="text" autocomplete="name" autocapitalize="words"',
+    phone: 'type="tel" inputmode="numeric" autocomplete="tel-national" maxlength="10"',
+    addr: 'type="text" autocomplete="street-address" autocapitalize="words"',
+    pin: 'type="text" inputmode="numeric" autocomplete="postal-code" maxlength="6"',
+    city: 'type="text" autocomplete="address-level2" autocapitalize="words"'
+  };
+  function link(ic, title, sub, act, arg) {
+    return '<button class="link" data-act="' + act + '"' + (arg == null ? "" : ' data-arg="' + esc(arg) + '"') + '><span class="ic">' + icon(ic, 22) + '</span><span class="txt"><b>' +
+      esc(title) + "</b>" + (sub ? "<small>" + esc(sub) + "</small>" : "") + '</span><span class="go">' + icon("back", 16) + "</span></button>";
+  }
+  function empty(ic, title, sub, action) {
+    return '<div class="empty"><div class="big">' + icon(ic, 38) + "</div><h2>" + esc(title) + "</h2><p>" + esc(sub) + "</p>" + btn(action, "tab", "", null, 1) + "</div>";
+  }
+  var statusChip = function () { return '<span class="chip amber">' + t("Placed · demo", "ऑर्डर हुआ · डेमो") + "</span>"; };
+
+  // ---------------------------------------------------------------- screens
+  function home() {
+    var shelf = P.map(function (p, i) {
+      return '<button data-act="product" data-arg="' + i + '"><img src="' + p.img + '" alt=""><div class="in"><div class="pname">' + esc(pname(p)) +
+        '</div><div class="price">' + from(p) + "</div></div></button>";
+    }).join("");
+    return '<div><div class="hero" style="background-image:url(../img/shilajit-hero.webp)"><div class="words"><span class="pill">' + t("From nature, just as it is", "प्रकृति से, जैसा है वैसा") +
+      "</span><h1>शुद्ध। प्राकृतिक।<br>हिमालय से।</h1><p>Pure. Natural. From the Himalaya.</p></div></div>" +
+      '<div class="strip">' + icon("truck", 20) + t("₹0 delivery across India", "पूरे भारत में ₹0 डिलीवरी") + "</div>" +
+      '<div class="pad">' + section(t("From the hills, to your home", "पहाड़ से, आपके घर तक")) + '<div class="shelf">' + shelf + "</div>" +
+      '<div style="margin-top:12px">' + btn(t("See all products", "सभी उत्पाद देखें"), "tab", "", null, 1) + "</div>" +
+      section(t("Purity you can see", "शुद्धता, जो दिखती है")) + '<div class="card">' +
+      feature("drop", t("Pure Uttarakhand shilajit", "शुद्ध उत्तराखंड शिलाजीत"), t("One resin in every jar. Only the quantity changes.", "हर जार में एक ही शिलाजीत। सिर्फ़ मात्रा बदलती है।")) + divider +
+      feature("peak", t("A gift of the hills", "पहाड़ की देन"), t("From the high mountains of Uttarakhand.", "उत्तराखंड के ऊँचे पहाड़ों से।")) + divider +
+      feature("jar", t("Sealed in glass", "काँच में सीलबंद"), t("Packed in small batches in Almora.", "अल्मोड़ा में छोटे बैचों में पैक।")) + "</div>" +
+      section(t("How it reaches you", "ऑर्डर कैसे पहुँचता है")) + '<div class="card">' +
+      step(1, t("Choose your size", "साइज़ चुनें"), t("Pay by UPI, QR, card or bank transfer.", "UPI, QR, कार्ड या बैंक ट्रांसफ़र से भुगतान।")) +
+      step(2, t("We pack it in Almora", "अल्मोड़ा में पैकिंग"), t("Dispatched within 1–5 working days.", "1–5 कार्यदिवसों में रवाना।")) +
+      step(3, t("India Post brings it home", "इंडिया पोस्ट से घर तक"), t("Usually 3–10 days, with tracking. India only.", "आम तौर पर 3–10 दिन, ट्रैकिंग के साथ। सिर्फ़ भारत में।")) + "</div>" +
+      '<div style="margin-top:20px">' + btn(t("Ask us on WhatsApp", "WhatsApp पर पूछें"), "wa", "wa", "chat", "ask") + "</div></div></div>";
+  }
+
+  function productsTab() {
+    var cards = P.map(function (p, i) {
+      return '<button class="pcard" data-act="product" data-arg="' + i + '"><div class="ph"><img src="' + p.img + '" alt=""><span class="chip cream">' + t("Pure & natural", "शुद्ध और प्राकृतिक") +
+        '</span></div><div class="in"><div class="pname" style="font-size:22px">' + esc(pname(p)) + '</div><div class="muted" style="font-size:14px">' + esc(t(p.tagEn, p.tagHi)) +
+        '</div><div class="foot"><span class="price" style="font-size:20px">' + from(p) + '</span><span class="btn small">' + t("Choose size", "साइज़ चुनें") + "</span></div></div></button>";
+    }).join("");
+    return '<div class="pad">' + section(t("Our collection", "हमारा संग्रह")) + cards +
+      '<div class="card soon"><span class="chip cream">' + t("Coming soon", "जल्द आ रहा है") + '</span><div class="pname" style="font-size:22px;margin-top:8px">' + t("Cordyceps", "कॉर्डिसेप्स") +
+      '</div><div class="muted" style="font-size:14px;margin-bottom:12px">' + t("Sizes and price will be announced when it is ready.", "साइज़ और दाम तैयार होने पर बताए जाएंगे।") + "</div>" +
+      btn(t("Tell me when it's ready", "तैयार होने पर बताएं"), "wa", "line", null, "cordyceps") + "</div></div>";
+  }
+
+  function productPage(pg) {
+    var p = P[pg.i], i = pg.sel, per, saveLine = "";
+    if (p.unit === "g") {
+      per = rupee(Math.round(p.prices[i] / p.sizes[i])) + " / " + unit("g");
+      var mult = p.sizes[i] / p.sizes[0], saved = p.prices[0] * mult - p.prices[i];
+      if (saved > 0) {
+        var n = mult === 2 ? t("two", "दो") : t("three", "तीन");
+        saveLine = '<div style="margin-top:8px"><span class="chip" style="font-size:13px;padding:5px 12px">' +
+          t("Save " + rupee(saved) + " vs " + n + " " + p.sizes[0] + " g jars", n + " " + p.sizes[0] + " ग्राम जार के मुक़ाबले " + rupee(saved) + " की बचत") + "</span></div>";
+      }
+    } else per = t("One size", "एक ही साइज़");
+    var chips = p.sizes.map(function (s, n) {
+      return '<button data-act="size" data-arg="' + n + '"' + (n === i ? ' class="on"' : "") + ">" + s + " " + unit(p.unit) + "</button>";
+    }).join("");
+    return '<div><img class="photo" src="' + p.img + '" alt=""><div class="pad" style="padding-top:16px"><span class="chip">' + t("Pure & natural", "शुद्ध और प्राकृतिक") +
+      '</span><div class="pname" style="font-size:28px;margin-top:8px">' + esc(pname(p)) + '</div><p class="muted" style="font-size:15px;margin:6px 0 18px">' + esc(t(p.descEn, p.descHi)) + "</p>" +
+      '<div class="label" style="margin-bottom:8px">' + t("Size", "साइज़") + '</div><div class="sizes">' + chips + "</div>" +
+      '<div style="display:flex;align-items:baseline;justify-content:space-between;margin-top:16px"><span class="price" style="font-size:30px">' + rupee(p.prices[i]) +
+      '</span><span class="muted" style="font-size:14px">' + per + "</span></div>" + saveLine +
+      '<div style="display:flex;gap:10px;margin-top:18px">' + stepper(pg.qty, "qty") + btn(t("Add to cart", "कार्ट में डालें"), "add") + "</div>" +
+      '<div class="card" style="margin-top:22px">' +
+      feature("truck", t("₹0 delivery across India", "पूरे भारत में ₹0 डिलीवरी"), t("By India Post. Dispatched in 1–5 working days.", "इंडिया पोस्ट से। 1–5 कार्यदिवसों में रवाना।")) + divider +
+      feature("check", t("Replaced if it arrives wrong", "ग़लत सामान मिले तो बदलाव"), t("Tell us within 48 hours of delivery.", "डिलीवरी के 48 घंटे के भीतर बताएं।")) + divider +
+      feature("leaf", t("How to use", "इस्तेमाल"), t("Follow the label. Store cool and dry. Ask a doctor first if pregnant, nursing, under 18 or on medication.",
+        "लेबल के निर्देश मानें। ठंडी, सूखी जगह रखें। गर्भवती हों, स्तनपान करा रही हों, 18 से कम हों या दवा ले रहे हों तो पहले डॉक्टर से पूछें।")) + "</div>" +
+      '<div style="margin-top:14px">' + btn(t("Ask about this on WhatsApp", "इसके बारे में WhatsApp पर पूछें"), "wa", "wa", "chat", "product") + "</div></div></div>";
+  }
+
+  function cartTab() {
+    if (!cart.length) return empty("cart", t("Your cart is empty", "कार्ट खाली है"), t("Add a jar or a bottle to get started.", "शुरू करने के लिए कोई उत्पाद जोड़ें।"), t("Browse products", "उत्पाद देखें"));
+    var lines = cart.map(function (l, n) {
+      var p = P[l.p];
+      return '<div class="line"><img src="' + p.img + '" alt=""><div class="mid"><div class="pname" style="font-size:17px">' + esc(pname(p)) + '</div><div class="muted" style="font-size:13px;margin-bottom:6px">' +
+        p.sizes[l.s] + " " + unit(p.unit) + "</div>" + stepper(l.q, "cartqty", n, true) + '</div><b>' + rupee(p.prices[l.s] * l.q) + "</b></div>";
+    }).join("");
+    return '<div class="pad">' + section(t("Your cart", "आपका कार्ट")) + lines + '<div class="card" style="margin-top:6px">' +
+      pair(t("Delivery across India", "पूरे भारत में डिलीवरी"), "₹0") + pair(t("Total", "कुल"), rupee(cartTotal()), true) + "</div>" +
+      '<div style="margin-top:16px">' + btn(t("Place order", "ऑर्डर करें"), "checkout") + '</div><div style="margin-top:10px">' +
+      btn(t("Order on WhatsApp instead", "WhatsApp पर ऑर्डर करें"), "wa", "wa", "chat", "cart") + "</div></div>";
+  }
+  function cartText() {
+    return cart.map(function (l) { var p = P[l.p]; return "• " + pname(p) + " " + p.sizes[l.s] + " " + unit(p.unit) + " × " + l.q + " = " + rupee(p.prices[l.s] * l.q); }).join("\n");
+  }
+
+  function payList() {
+    return PAY.map(function (m) {
+      var on = m[0] === payMethod;
+      return '<button class="pay' + (on ? " on" : "") + '" data-act="paymethod" data-arg="' + m[0] + '"><span class="head"><span class="ring"></span><span><b>' + esc(t(m[1], m[2])) +
+        "</b><small>" + esc(t(m[3], m[4])) + "</small></span></span>" + (on ? (m[0] === "qr" ? '<canvas id="qr" width="450" height="450"></canvas>' : "") + '<span class="more" style="display:block">' + esc(t(m[5], m[6])) + "</span>" : "") + "</button>";
+    }).join("");
+  }
+  function checkoutPage() {
+    return '<div class="pad" style="padding-top:14px"><div class="note">' + icon("check", 18) + "<span>" +
+      t("Demo checkout. No payment is taken and nothing is sent to the shop.", "डेमो चेकआउट। कोई भुगतान नहीं लिया जाता और दुकान को कुछ नहीं भेजा जाता।") + "</span></div>" +
+      section(t("Delivery details", "डिलीवरी का पता")) + field(t("Full name", "पूरा नाम"), "name", ATTR.name) + field(t("Mobile number", "मोबाइल नंबर"), "phone", ATTR.phone) +
+      field(t("Address", "पता"), "addr", ATTR.addr) + '<div class="two">' + field(t("PIN code", "पिन कोड"), "pin", ATTR.pin) + field(t("City", "शहर"), "city", ATTR.city) + "</div>" +
+      section(t("Payment", "भुगतान")) + '<div id="paylist">' + payList() + '</div><div class="card" style="margin-top:16px">' +
+      pair(t("Delivery across India", "पूरे भारत में डिलीवरी"), "₹0") + pair(t("To pay", "देय राशि"), rupee(cartTotal()), true) + "</div>" +
+      '<div style="margin-top:16px">' + btn(t("Pay ", "भुगतान करें ") + rupee(cartTotal()), "pay") + "</div></div>";
+  }
+
+  function itemCount(o) { return (o.items || []).reduce(function (n, it) { return n + (it.q || 0); }, 0); }
+  function ordersTab() {
+    if (!orders.length) return empty("orders", t("No orders yet", "अभी कोई ऑर्डर नहीं"), t("Your orders will appear here once you place one.", "ऑर्डर करने के बाद वे यहाँ दिखेंगे।"), t("Browse products", "उत्पाद देखें"));
+    return '<div class="pad">' + section(t("Your orders", "आपके ऑर्डर")) + orders.map(function (o, n) {
+      return '<button class="order" data-act="order" data-arg="' + n + '"><span class="head"><b style="color:var(--forest)">' + esc(o.no) + "</b>" + statusChip() +
+        '</span><span class="muted" style="display:block;font-size:13px;margin-top:4px">' + esc(when(o.time)) + " · " + itemCount(o) + " " + t("item(s)", "उत्पाद") +
+        '</span><b style="display:block;font-size:18px;margin-top:6px">' + rupee(o.total) + "</b></button>";
+    }).join("") + "</div>";
+  }
+  function orderLines(o) {
+    return (o.items || []).filter(function (it) { return P[it.p] && it.s < P[it.p].sizes.length; }).map(function (it) {
+      var p = P[it.p];
+      return { name: pname(p) + " " + p.sizes[it.s] + " " + unit(p.unit) + " × " + it.q, price: rupee(p.prices[it.s] * it.q) };
+    });
+  }
+  function orderWhere(o) { return o.addr + ", " + o.city + " " + o.pin; }
+  function orderPage(pg) {
+    var o = pg.o, done = "";
+    if (pg.fresh) {
+      done = '<div class="done"><div class="ok">' + icon("check", 40) + "</div><h2>" + t("Thank you, ", "धन्यवाद, ") + esc(String(o.name).trim().split(" ")[0]) + '!</h2><div class="muted" style="font-size:14px">' +
+        t("This is how a placed order will look. Nothing was charged.", "ऑर्डर होने पर ऐसा दिखेगा। कोई रक़म नहीं ली गई।") + "</div></div>";
+    }
+    return '<div class="pad" style="padding-top:16px">' + done + '<div class="card"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px"><span class="muted" style="font-size:13px">' +
+      esc(when(o.time)) + "</span>" + statusChip() + "</div>" + orderLines(o).map(function (l) { return pair(l.name, l.price); }).join("") + divider +
+      pair(t("Delivery across India", "पूरे भारत में डिलीवरी"), "₹0") + pair(t("Total", "कुल"), rupee(o.total), true) + '</div><div class="card">' +
+      feature("truck", t("Deliver to", "डिलीवरी का पता"), o.name + "\n" + orderWhere(o) + "\n" + o.phone) + divider +
+      feature("doc", t("Payment", "भुगतान"), payName(o.pay) + " · " + t("demo, not charged", "डेमो, कोई रक़म नहीं ली गई")) + "</div>" +
+      '<div style="margin-top:16px">' + btn(t("Send order on WhatsApp", "ऑर्डर WhatsApp पर भेजें"), "wa", "wa", "chat", "order") + '</div><div style="margin-top:10px">' +
+      btn(t("Order again", "फिर से ऑर्डर करें"), "reorder", "line") + "</div></div>";
+  }
+
+  function accountTab() {
+    return '<div class="pad">' + section(t("Your details", "आपकी जानकारी")) + '<div class="card">' + field(t("Full name", "पूरा नाम"), "name", ATTR.name) +
+      field(t("Mobile number", "मोबाइल नंबर"), "phone", ATTR.phone) + field(t("Address", "पता"), "addr", ATTR.addr) + field(t("PIN code", "पिन कोड"), "pin", ATTR.pin) +
+      field(t("City", "शहर"), "city", ATTR.city) + btn(t("Save", "सेव करें"), "saveprofile") + '<div class="muted" style="font-size:12px;margin-top:8px">' +
+      t("Used to fill in your address at checkout. Stored only on this phone.", "चेकआउट पर पता भरने के लिए। सिर्फ़ इसी फ़ोन में सेव रहता है।") + "</div></div>" +
+      section(t("Language", "भाषा")) + '<div class="choice"><button data-act="setlang" data-arg="en"' + (hindi ? "" : ' class="on"') + '>English</button><button data-act="setlang" data-arg="hi"' + (hindi ? ' class="on"' : "") + ">हिंदी</button></div>" +
+      section(t("Help", "मदद")) + '<div class="card flush">' + link("chat", t("Chat on WhatsApp", "WhatsApp पर बात करें"), "+91 70178 02089", "wa", "help") +
+      link("phone", t("Call us", "फ़ोन करें"), t("Mon–Sat, 10 am – 6 pm", "सोम–शनि, सुबह 10 – शाम 6"), "go", "tel:" + PHONE) + link("mail", t("Email", "ईमेल"), EMAIL, "go", "mailto:" + EMAIL) + "</div>" +
+      section(t("App", "ऐप")) + '<div class="card flush">' + link("refresh", t("Check for updates", "अपडेट जाँचें"), t("Version ", "संस्करण ") + VERSION + t(" · updates itself", " · अपने आप अपडेट होता है"), "update") + "</div>" +
+      section(t("Policies", "नीतियाँ")) + '<div class="card flush">' + link("truck", t("Shipping", "शिपिंग"), t("Free across India", "पूरे भारत में मुफ़्त"), "web", "https://kiratva.com/shipping-policy") +
+      link("doc", t("Returns and refunds", "वापसी और रिफ़ंड"), "", "web", "https://kiratva.com/cancellation-and-refund-policy") + link("doc", t("Terms", "नियम"), "", "web", "https://kiratva.com/terms-and-conditions") +
+      link("doc", t("Privacy", "निजता"), "", "web", "https://kiratva.com/privacy-policy") + "</div>" +
+      '<div class="about">KIRATVA · ' + t("Almora, Uttarakhand", "अल्मोड़ा, उत्तराखंड") + "\n" + t("Demo app ", "डेमो ऐप ") + VERSION + t(" · no payment is taken", " · कोई भुगतान नहीं लिया जाता") + "\n\n" +
+      t("These products are not intended to diagnose, treat, cure or prevent any disease. Read the label before use.", "ये उत्पाद किसी बीमारी के निदान, इलाज या रोकथाम के लिए नहीं हैं। इस्तेमाल से पहले लेबल पढ़ें।") + "</div></div>";
+  }
+
+  // ---------------------------------------------------------------- sample QR
+  function drawQr() {
+    var c = document.getElementById("qr");
+    if (!c) return;
+    var g = c.getContext("2d"), W = c.width, n = 25, pad = W * 0.06, cell = (W - 2 * pad) / n, seed = 20261126;
+    function rnd() { seed = (seed + 0x6D2B79F5) | 0; var x = Math.imul(seed ^ (seed >>> 15), 1 | seed); x = (x + Math.imul(x ^ (x >>> 7), 61 | x)) ^ x; return ((x ^ (x >>> 14)) >>> 0) / 4294967296; }
+    g.fillStyle = "#fff"; g.fillRect(0, 0, W, W);
+    g.fillStyle = "#15382B";
+    var corners = [[0, 0], [0, n - 7], [n - 7, 0]];
+    for (var r = 0; r < n; r++) for (var col = 0; col < n; col++) {
+      var finder = false, zone = false;
+      corners.forEach(function (k) {
+        var a = r - k[0], b = col - k[1];
+        if (a >= -1 && a <= 7 && b >= -1 && b <= 7) zone = true;
+        if (a >= 0 && a < 7 && b >= 0 && b < 7 && (a === 0 || a === 6 || b === 0 || b === 6 || (a >= 2 && a <= 4 && b >= 2 && b <= 4))) finder = true;
+      });
+      var dot = rnd() > 0.52;
+      if (finder || (!zone && dot)) g.fillRect(pad + col * cell, pad + r * cell, cell + 0.5, cell + 0.5);
+    }
+    var w = W * 0.36, h = W * 0.15, x = (W - w) / 2, y = (W - h) / 2;
+    g.fillStyle = "#E2A22B"; g.fillRect(x, y, w, h);
+    g.fillStyle = "#17261E"; g.textAlign = "center"; g.textBaseline = "middle";
+    g.font = "bold " + (h * 0.62) + "px -apple-system, sans-serif"; g.fillText("DEMO", W / 2, W / 2 + 2);
+  }
+
+  // ---------------------------------------------------------------- navigation
+  function current() { return stack[stack.length - 1]; }
+  function capture() {
+    Array.prototype.forEach.call($content.querySelectorAll("input[data-f]"), function (el) { draft[el.getAttribute("data-f")] = el.value.trim(); });
+  }
+  function render(keep) {
+    capture();
+    var root = !stack.length, pg = current(), title = "KIRATVA  किरत्व", html;
+    if (root) html = [home, productsTab, cartTab, ordersTab, accountTab][tab]();
+    else if (pg.type === "product") { title = pname(P[pg.i]); html = productPage(pg); }
+    else if (pg.type === "checkout") { title = t("Checkout", "चेकआउट"); html = checkoutPage(); }
+    else { title = t("Order ", "ऑर्डर ") + pg.o.no; html = orderPage(pg); }
+    var y = $content.scrollTop;
+    if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+    $back.hidden = root; $nav.hidden = !root;
+    $title.textContent = title;
+    $lang.textContent = hindi ? "EN" : "हिंदी";
+    document.documentElement.lang = hindi ? "hi" : "en";
+    $content.innerHTML = html;
+    $content.classList.remove("enter");
+    if (keep) $content.scrollTop = y;
+    else { $content.scrollTop = 0; void $content.offsetWidth; $content.classList.add("enter"); }
+    drawQr();
+    var labels = [t("Home", "होम"), t("Products", "उत्पाद"), t("Cart", "कार्ट"), t("Orders", "ऑर्डर"), t("Account", "खाता")];
+    $nav.innerHTML = ["home", "leaf", "cart", "orders", "user"].map(function (ic, i) {
+      var n = cartCount();
+      return '<button data-act="tab" data-arg="' + i + '"' + (i === tab ? ' class="on" aria-current="page"' : "") + '><span class="ic">' + icon(ic) +
+        (i === 2 && n ? '<span class="badge">' + n + "</span>" : "") + "</span>" + labels[i] + "</button>";
+    }).join("");
+    if (!$install.hidden) installHint();
+  }
+  function push(pg) { capture(); stack.push(pg); try { history.pushState({ d: stack.length }, ""); } catch (e) {} render(); }
+  function goTab(i) {
+    capture();
+    var n = stack.length;
+    stack = []; tab = i;
+    if (n) { skipPop = true; try { history.go(-n); } catch (e) { skipPop = false; } }
+    render();
+  }
+  window.addEventListener("popstate", function (e) {
+    if (skipPop) { skipPop = false; return; }
+    var d = (e.state && e.state.d) || 0;
+    if (d < stack.length) { capture(); stack.length = d; render(); }
+  });
+
+  function bad(key, msg) {
+    var el = $content.querySelector('input[data-f="' + key + '"]');
+    toast(msg);
+    if (el) { el.classList.add("bad"); el.scrollIntoView({ block: "center", behavior: "smooth" }); el.focus({ preventScroll: true }); }
+  }
+
+  var ACT = {
+    back: function () { if (stack.length) history.back(); },
+    lang: function () { hindi = !hindi; save("hindi", hindi); render(true); },
+    setlang: function (a) { hindi = a === "hi"; save("hindi", hindi); render(true); },
+    tab: function (a) { goTab(+a); },
+    product: function (a) { push({ type: "product", i: +a, sel: P[+a].pick, qty: 1 }); },
+    size: function (a) { current().sel = +a; render(true); },
+    qty: function (a, el) { var pg = current(); pg.qty = Math.max(1, Math.min(10, pg.qty + (+el.getAttribute("data-d")))); render(true); },
+    add: function () { var pg = current(); addToCart(pg.i, pg.sel, pg.qty); toast(t("Added to cart", "कार्ट में जोड़ा गया")); goTab(2); },
+    cartqty: function (a, el) {
+      var l = cart[+a]; if (!l) return;
+      l.q = Math.min(10, l.q + (+el.getAttribute("data-d")));
+      if (l.q <= 0) cart.splice(+a, 1);
+      save("cart", cart); render(true);
+    },
+    checkout: function () { push({ type: "checkout" }); },
+    paymethod: function (a) {
+      payMethod = a;
+      document.getElementById("paylist").innerHTML = payList();
+      drawQr();
+    },
+    pay: function () {
+      capture();
+      if (!draft.name) return bad("name", t("Please enter your name.", "कृपया अपना नाम लिखें।"));
+      if (!/^[6-9]\d{9}$/.test(draft.phone)) return bad("phone", t("Enter a 10-digit Indian mobile number.", "10 अंकों का भारतीय मोबाइल नंबर लिखें।"));
+      if (!draft.addr) return bad("addr", t("Please enter your address.", "कृपया पता लिखें।"));
+      if (!/^\d{6}$/.test(draft.pin)) return bad("pin", t("Enter a 6-digit PIN code.", "6 अंकों का पिन कोड लिखें।"));
+      if (!draft.city) return bad("city", t("Please enter your city.", "कृपया शहर लिखें।"));
+      if (!cart.length) return goTab(2);
+      FIELDS.forEach(function (f) { profile[f] = draft[f]; });
+      save("profile", profile);
+      var o = { no: "KD-" + (100000 + Math.floor(Math.random() * 900000)), time: Date.now(), items: cart.map(function (l) { return { p: l.p, s: l.s, q: l.q }; }),
+        total: cartTotal(), pay: payMethod, name: draft.name, phone: draft.phone, addr: draft.addr, pin: draft.pin, city: draft.city };
+      orders.unshift(o); save("orders", orders);
+      cart = []; save("cart", cart);
+      tab = 3; stack = [{ type: "order", o: o, fresh: true }];
+      try { history.replaceState({ d: 1 }, ""); } catch (e) {}
+      $content.innerHTML = ""; render();
+    },
+    order: function (a) { if (orders[+a]) push({ type: "order", o: orders[+a], fresh: false }); },
+    reorder: function () {
+      (current().o.items || []).forEach(function (it) { if (P[it.p] && it.s < P[it.p].sizes.length) addToCart(it.p, it.s, it.q); });
+      goTab(2);
+    },
+    saveprofile: function () {
+      capture();
+      FIELDS.forEach(function (f) { profile[f] = draft[f]; });
+      save("profile", profile);
+      toast(t("Saved on this phone", "इस फ़ोन में सेव हो गया"));
+    },
+    wa: function (a) {
+      var pg = current();
+      if (a === "ask") whatsapp(t("Namaste KIRATVA, I have a question about your products.", "नमस्ते KIRATVA, मुझे आपके उत्पादों के बारे में जानना है।"));
+      else if (a === "help") whatsapp(t("Namaste KIRATVA, I need some help.", "नमस्ते KIRATVA, मुझे मदद चाहिए।"));
+      else if (a === "cordyceps") whatsapp(t("Namaste KIRATVA, please tell me when Cordyceps is ready.", "नमस्ते KIRATVA, कॉर्डिसेप्स तैयार होने पर मुझे बताइए।"));
+      else if (a === "product") whatsapp(t("Namaste KIRATVA, I'm interested in " + P[pg.i].en + ".", "नमस्ते KIRATVA, मुझे " + P[pg.i].hi + " में रुचि है।"));
+      else if (a === "cart") whatsapp(t("Namaste KIRATVA, I'd like to order:", "नमस्ते KIRATVA, मुझे यह ऑर्डर करना है:") + "\n" + cartText() + "\n" + t("Total", "कुल") + ": " + rupee(cartTotal()));
+      else if (a === "order") {
+        var o = pg.o;
+        whatsapp(t("Namaste KIRATVA, my order ", "नमस्ते KIRATVA, मेरा ऑर्डर ") + o.no + ":\n" + orderLines(o).map(function (l) { return "• " + l.name + " = " + l.price; }).join("\n") + "\n" +
+          t("Total", "कुल") + ": " + rupee(o.total) + "\n" + t("Payment", "भुगतान") + ": " + payName(o.pay) + "\n" + t("Deliver to", "पता") + ": " + o.name + ", " + orderWhere(o) + "\n" + t("Mobile", "मोबाइल") + ": " + o.phone);
+      }
+    },
+    go: function (a) { location.href = a; },
+    web: function (a) { web(a); },
+    update: function () {
+      toast(t("Checking for updates…", "अपडेट जाँच रहे हैं…"));
+      var reload = function () { location.reload(); };
+      if (navigator.serviceWorker && navigator.serviceWorker.getRegistration) {
+        navigator.serviceWorker.getRegistration().then(function (r) { return r && r.update(); }).catch(function () {}).then(function () { setTimeout(reload, 600); });
+      } else setTimeout(reload, 600);
+    },
+    hideinstall: function () { $install.hidden = true; save("install-hidden", true); }
+  };
+  document.addEventListener("click", function (e) {
+    var el = e.target.closest ? e.target.closest("[data-act]") : null;
+    if (!el) return;
+    var fn = ACT[el.getAttribute("data-act")];
+    if (fn) fn(el.getAttribute("data-arg"), el);
+  });
+  $content.addEventListener("input", function (e) { if (e.target.classList) e.target.classList.remove("bad"); });
+
+  // ---------------------------------------------------------------- add to home screen
+  var standalone = navigator.standalone === true || (window.matchMedia && matchMedia("(display-mode: standalone)").matches);
+  var ios = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  function installHint() {
+    var how = ios
+      ? t("Tap ", "Safari में ") + icon("share", 18) + t(" Share, then “Add to Home Screen”.", " Share दबाएं, फिर “Add to Home Screen” चुनें।")
+      : t("Open your browser menu and choose “Add to Home screen”.", "ब्राउज़र मेनू खोलें और “Add to Home screen” चुनें।");
+    $install.innerHTML = '<img src="icon-180.png" alt=""><p><b>' + t("Install the KIRATVA app", "KIRATVA ऐप इंस्टॉल करें") + "</b>" + how + '</p><button data-act="hideinstall" aria-label="Close">×</button>';
+  }
+  if (!standalone && !load("install-hidden", false)) { $install.hidden = false; }
+
+  try { history.replaceState({ d: 0 }, ""); } catch (e) {}
+  render();
+  if ("serviceWorker" in navigator && /^https?:$/.test(location.protocol)) navigator.serviceWorker.register("sw.js").catch(function () {});
+})();
+</script>
+</body>
+</html>
